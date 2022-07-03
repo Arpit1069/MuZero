@@ -6,7 +6,7 @@ import webbrowser
 import os
 import time
 import subprocess
-from ecapture import ecapture as ec
+# from ecapture import ecapture as ec
 import wolframalpha
 import json
 import requests
@@ -16,7 +16,7 @@ print('Loading your AI personal assistant - G One')
 
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
-engine.setProperty('voice','voices[0].id')
+engine.setProperty('voice','voices[1].id')
 
 
 def speak(text):
