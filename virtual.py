@@ -1,3 +1,4 @@
+from matplotlib.pyplot import close
 import speech_recognition as sr
 import pyttsx3
 import datetime
@@ -9,10 +10,49 @@ import subprocess
 # from ecapture import ecapture as ec
 import wolframalpha
 import json
+import pywhatkit
 import requests
+import pyjokes
+import pyautogui
+import random
+
+GREETINGS = ["hello jarvis", "jarvis", "wake up jarvis", "you there jarvis", "time to work jarvis", "hey jarvis",
+             "ok jarvis", "are you there"]
+
+GREETINGS_RES = ["always there for you sir", "i am ready sir",
+                 "your wish my command", "how can i help you sir?", "i am online and ready sir"]
+#All Files Code here :
+
+# 1. Youtube
+def youtube():
+    import webbrowser, urllib, re
+    import urllib.parse
+    import urllib.request
+
+    # domain = input("Enter the song name: ")
+    domain = statement
+    song = urllib.parse.urlencode({"search_query" : domain})
+    print("Song" + song)
+
+    # fetch the ?v=query_string
+    result = urllib.request.urlopen("http://www.youtube.com/results?" + song)
+    print(result)
+
+    # make the url of the first result song
+    search_results = re.findall(r'href=\"\/watch\?v=(.{4})', result.read().decode())
+    print(search_results)
+
+    # make the final url of song selects the very first result from youtube result
+    url = "http://www.youtube.com/watch?v="+str(search_results)
+
+    # play the song using webBrowser module which opens the browser 
+    # webbrowser.open(url, new = 1)
+    webbrowser.open_new(url)
 
 
-print('Loading your AI personal assistant - G One')
+
+
+print('Loading your AI personal assistant - MuZero')
 
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
@@ -50,7 +90,7 @@ def takeCommand():
             return "None"
         return statement
 
-speak("Loading your AI personal assistant G-One")
+speak("Loading your AI personal assistant MuZero")
 wishMe()
 
 
@@ -64,10 +104,9 @@ if __name__=='__main__':
             continue
 
         if "good bye" in statement or "ok bye" in statement or "stop" in statement:
-            speak('your personal assistant G-one is shutting down,Good bye')
-            print('your personal assistant G-one is shutting down,Good bye')
+            speak('your personal assistant MuZero is shutting down,Good bye')
+            print('your personal assistant MuZero is shutting down,Good bye')
             break
-
 
 
         if 'wikipedia' in statement:
@@ -83,15 +122,73 @@ if __name__=='__main__':
             speak("youtube is open now")
             time.sleep(5)
 
+        # elif re.search('open', statement):
+        #         domain = statement.split(' ')[-1]
+        #         open_result = obj.website_opener(domain)
+        #         speak(f'Alright sir !! Opening {domain}')
+        #         print(open_result)
+
+        elif 'youtube' in statement:
+                youtube()
+                video = statement.split(' ')[1]
+                speak(f"Okay sir, playing {video} on youtube")
+                pywhatkit.playonyt(video)
+
         elif 'open google' in statement:
             webbrowser.open_new_tab("https://www.google.com")
             speak("Google chrome is open now")
             time.sleep(5)
 
-        elif 'open gmail' in statement:
+        elif "play music" in statement or "hit some music" in statement:
+                music_dir = "F://Songs//Imagine_Dragons"
+                songs = os.listdir(music_dir)
+                for song in songs:
+                    os.startfile(os.path.join(music_dir, song))
+
+        # elif "what do i have" in statement or "do i have plans" or "am i busy" in statement:
+        #         obj.google_calendar_events(command)
+        #         def note(text):
+        #             date = datetime.datetime.now()
+        #             file_name = str(date).replace(":", "-") + "-note.txt"
+        #             with open(file_name, "w") as f:
+        #                 f.write(text)
+        #             notepad = "C://Program Files (x86)//Notepad++//notepad++.exe"
+        #             subprocess.Popen([notepad, file_name])
+        #         note(statement)
+
+        elif "joke" in statement:
+                joke = pyjokes.get_joke()
+                print(joke)
+                speak(joke)
+
+
+        elif 'open Gmail' in statement:
             webbrowser.open_new_tab("gmail.com")
             speak("Google Mail open now")
             time.sleep(5)
+
+        elif "switch the window" in statement or "switch window" in statement:
+                speak("Okay sir, Switching the window")
+                pyautogui.keyDown("alt")
+                pyautogui.press("tab")
+                time.sleep(1)
+                pyautogui.keyUp("alt")
+
+        elif "take screenshot" in statement or "take a screenshot" in statement or "capture the screen" in statement:
+                speak("By what name do you want to save the screenshot?")
+                # name = obj.mic_input()
+                name = statement
+                speak("Alright sir, taking the screenshot")
+                img = pyautogui.screenshot()
+                name = f"{name}.png"
+                img.save(name)
+                speak("The screenshot has been succesfully captured")
+
+
+        elif "ip address" in statement:
+                ip = requests.get('https://api.ipify.org').text
+                print(ip)
+                speak(f"Your ip address is {ip}")
 
         elif "weather" in statement:
             api_key="8ef61edcf1c576d65d836254e11ea420"
@@ -124,10 +221,12 @@ if __name__=='__main__':
                 speak(" City Not Found ")
 
 
-
         elif 'time' in statement:
             strTime=datetime.datetime.now().strftime("%H:%M:%S")
             speak(f"the time is {strTime}")
+
+        elif statement in GREETINGS:
+                speak(random.choice(GREETINGS_RES))
 
         elif 'who are you' in statement or 'what can you do' in statement:
             speak('I am G-one version 1 point O your persoanl assistant. I am programmed to minor tasks like'
@@ -136,8 +235,8 @@ if __name__=='__main__':
 
 
         elif "who made you" in statement or "who created you" in statement or "who discovered you" in statement:
-            speak("I was built by Mirthula")
-            print("I was built by Mirthula")
+            speak("I was built by Chiku")
+            print("I was built by Chiku")
 
         elif "open stackoverflow" in statement:
             webbrowser.open_new_tab("https://stackoverflow.com/login")
@@ -148,8 +247,8 @@ if __name__=='__main__':
             speak('Here are some headlines from the Times of India,Happy reading')
             time.sleep(6)
 
-        elif "camera" in statement or "take a photo" in statement:
-            ec.capture(0,"robo camera","img.jpg")
+        # elif "camera" in statement or "take a photo" in statement:
+        #     ec.capture(0,"robo camera","img.jpg")
 
         elif 'search'  in statement:
             statement = statement.replace("search", "")
@@ -166,21 +265,23 @@ if __name__=='__main__':
             speak(answer)
             print(answer)
 
+        elif "hide all files" in statement or "hide this folder" in statement:
+                os.system("attrib +h /s /d")
+                speak("Sir, all the files in this folder are now hidden")
+
+        elif "visible" in statement or "make files visible" in statement:
+                os.system("attrib -h /s /d")
+                speak("Sir, all the files in this folder are now visible to everyone. I hope you are taking this decision in your own peace")
+
+
+        elif "goodbye" in statement or "offline" in statement or "bye" in statement:
+                speak("Alright sir, going offline. It was nice working with you")
+                exit()
 
         elif "log off" in statement or "sign out" in statement:
             speak("Ok , your pc will log off in 10 sec make sure you exit from all applications")
             subprocess.call(["shutdown", "/l"])
 
+
+
 time.sleep(3)
-
-
-
-
-
-
-
-
-
-
-
-
