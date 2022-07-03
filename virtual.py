@@ -7,17 +7,23 @@ import webbrowser
 import os
 import time
 import subprocess
-# from ecapture import ecapture as ec
+from ecapture import ecapture as ec
 import wolframalpha
 import json
 import pywhatkit
 import requests
 import pyjokes
+import cv2 as cv
 import pyautogui
 import random
 
-GREETINGS = ["hello jarvis", "jarvis", "wake up jarvis", "you there jarvis", "time to work jarvis", "hey jarvis",
-             "ok jarvis", "are you there"]
+import webbrowser, urllib, re
+import urllib.parse
+import urllib.request
+
+
+GREETINGS = ["hello Muzero", "Muzero", "wake up Muzero", "you there Muzero", "time to work Muzero", "hey Muzero",
+             "ok Muzero", "are you there"]
 
 GREETINGS_RES = ["always there for you sir", "i am ready sir",
                  "your wish my command", "how can i help you sir?", "i am online and ready sir"]
@@ -25,9 +31,6 @@ GREETINGS_RES = ["always there for you sir", "i am ready sir",
 
 # 1. Youtube
 def youtube():
-    import webbrowser, urllib, re
-    import urllib.parse
-    import urllib.request
 
     # domain = input("Enter the song name: ")
     domain = statement
@@ -50,9 +53,7 @@ def youtube():
     webbrowser.open_new(url)
 
 
-
-
-print('Loading your AI personal assistant - MuZero')
+print('Starting your AI personal assistant - MuZero')
 
 engine=pyttsx3.init('sapi5')
 voices=engine.getProperty('voices')
@@ -161,13 +162,13 @@ if __name__=='__main__':
                 print(joke)
                 speak(joke)
 
-
-        elif 'open Gmail' in statement:
-            webbrowser.open_new_tab("gmail.com")
-            speak("Google Mail open now")
+        elif 'Gmail' in statement:
+            print("Gmail was used")
+            webbrowser.open_new_tab("https://www.gmail.google.com")
+            speak("Google Mail is opened now for you")
             time.sleep(5)
 
-        elif "switch the window" in statement or "switch window" in statement:
+        elif "switch the window" in statement or "switch window" in statement or "switch tab" in statement:
                 speak("Okay sir, Switching the window")
                 pyautogui.keyDown("alt")
                 pyautogui.press("tab")
@@ -218,7 +219,7 @@ if __name__=='__main__':
                       str(weather_description))
 
             else:
-                speak(" City Not Found ")
+                speak("City Not Found ")
 
 
         elif 'time' in statement:
@@ -228,18 +229,17 @@ if __name__=='__main__':
         elif statement in GREETINGS:
                 speak(random.choice(GREETINGS_RES))
 
-        elif 'who are you' in statement or 'what can you do' in statement:
-            speak('I am G-one version 1 point O your persoanl assistant. I am programmed to minor tasks like'
+        elif 'who are you' in statement or 'what can you do' in statement or 'something about yourself' in statement:
+            speak('I am Muzero version 1 point O your persoanl assistant. I am programmed to minor tasks like'
                   'opening youtube,google chrome,gmail and stackoverflow ,predict time,take a photo,search wikipedia,predict weather' 
                   'in different cities , get top headline news from times of india and you can ask me computational or geographical questions too!')
-
 
         elif "who made you" in statement or "who created you" in statement or "who discovered you" in statement:
             speak("I was built by Chiku")
             print("I was built by Chiku")
 
-        elif "open stackoverflow" in statement:
-            webbrowser.open_new_tab("https://stackoverflow.com/login")
+        elif "open stackoverflow" in statement or "stack" in statement  or "overflow" in statement :
+            webbrowser.open_new_tab("https://stackoverflow.com/")
             speak("Here is stackoverflow")
 
         elif 'news' in statement:
@@ -247,8 +247,16 @@ if __name__=='__main__':
             speak('Here are some headlines from the Times of India,Happy reading')
             time.sleep(6)
 
-        # elif "camera" in statement or "take a photo" in statement:
-        #     ec.capture(0,"robo camera","img.jpg")
+        elif "camera" in statement or "take a photo" in statement:
+            # ec.capture(0,"robo camera","img.jpg")
+            cam = cv.VideoCapture(0)   
+            s, img = cam.read()
+            if s:
+                cv.namedWindow("cam-test")
+                cv.imshow("cam-test",img)
+                cv.waitKey(0)
+                cv.destroyWindow("cam-test")
+                cv.imwrite("filename.jpg",img)
 
         elif 'search'  in statement:
             statement = statement.replace("search", "")
@@ -281,7 +289,6 @@ if __name__=='__main__':
         elif "log off" in statement or "sign out" in statement:
             speak("Ok , your pc will log off in 10 sec make sure you exit from all applications")
             subprocess.call(["shutdown", "/l"])
-
 
 
 time.sleep(3)
